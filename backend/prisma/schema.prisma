@@ -1,0 +1,107 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  name         String
+  email        String   @unique
+  passwordHash String
+  avatar       String?
+  createdAt    DateTime @default(now())
+  trips        Trip[]
+}
+
+model Trip {
+  id             Int          @id @default(autoincrement())
+  user           User         @relation(fields: [userId], references: [id])
+  userId         Int
+  title          String
+  description    String
+  startDate      DateTime
+  endDate        DateTime
+  travelerCount  Int
+  budget         Float
+  coverImage     String?
+  visibility     Visibility   @default(private)
+  shareId        String       @default(uuid()) @unique
+  createdAt      DateTime     @default(now())
+  tripStops      TripStop[]
+  packingItems   PackingItem[]
+  notes          TripNote[]
+}
+
+enum Visibility {
+  private
+  public
+}
+
+model TripStop {
+  id            Int           @id @default(autoincrement())
+  trip          Trip          @relation(fields: [tripId], references: [id])
+  tripId        Int
+  cityId        Int?
+  arrivalDate   DateTime
+  departureDate DateTime
+  orderIndex    Int
+  notes         String?
+  activities    TripActivity[]
+}
+
+model City {
+  id              Int        @id @default(autoincrement())
+  externalCityId  String     @unique
+  name            String
+  country         String
+  latitude        Float
+  longitude       Float
+  averageCost     Float?
+  popularityScore Int?
+  region          String?
+  currency        String?
+  createdAt       DateTime   @default(now())
+}
+
+model Activity {
+  id            Int      @id @default(autoincrement())
+  cityId        Int?
+  city          City?    @relation(fields: [cityId], references: [id])
+  title         String
+  description   String
+  category      String
+  estimatedCost Float
+  duration      Float
+  image         String?
+}
+
+model TripActivity {
+  id          Int      @id @default(autoincrement())
+  stop        TripStop @relation(fields: [stopId], references: [id])
+  stopId      Int
+  activityId  Int
+  selectedDate DateTime
+}
+
+model PackingItem {
+  id      Int     @id @default(autoincrement())
+  trip    Trip    @relation(fields: [tripId], references: [id])
+  tripId  Int
+  title   String
+  category String
+  packed  Boolean @default(false)
+}
+
+model TripNote {
+  id        Int      @id @default(autoincrement())
+  trip      Trip     @relation(fields: [tripId], references: [id])
+  tripId    Int
+  stop      TripStop? @relation(fields: [stopId], references: [id])
+  stopId    Int?
+  note      String
+  createdAt DateTime  @default(now())
+}
