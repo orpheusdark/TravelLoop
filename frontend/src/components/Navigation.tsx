@@ -1,6 +1,7 @@
 import { Link, NavLink } from 'react-router-dom';
 import { FiCompass, FiDollarSign, FiHome, FiList, FiMap, FiUser, FiBookOpen } from 'react-icons/fi';
 import clsx from 'clsx';
+import { motion } from 'framer-motion';
 
 const links = [
   { to: '/', label: 'Dashboard', icon: FiHome },
@@ -22,22 +23,23 @@ const Navigation = () => {
         </Link>
       </div>
       <nav className="space-y-3">
-        {links.map((item) => {
+        {links.map((item, idx) => {
           const Icon = item.icon;
           return (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              className={({ isActive }) =>
-                clsx(
-                  'group flex items-center gap-3 rounded-3xl px-4 py-3 text-sm font-medium transition',
-                  isActive ? 'bg-brand-600 text-white shadow-lg' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-                )
-              }
-            >
-              <Icon className="h-5 w-5" />
-              {item.label}
-            </NavLink>
+            <motion.div key={item.to} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.03 }}>
+              <NavLink
+                to={item.to}
+                className={({ isActive }) =>
+                  clsx(
+                    'group flex items-center gap-3 rounded-3xl px-4 py-3 text-sm font-medium transition',
+                    isActive ? 'bg-brand-600 text-white shadow-lg' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                  )
+                }
+              >
+                <Icon className="h-5 w-5" />
+                {item.label}
+              </NavLink>
+            </motion.div>
           );
         })}
       </nav>
