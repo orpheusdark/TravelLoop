@@ -4,6 +4,8 @@ import StatsCard from '../components/StatsCard';
 import { getTrips } from '../services/trips';
 import Card from '../components/ui/card';
 import { useAuthStore } from '../hooks/useAuthStore';
+import { motion } from 'framer-motion';
+import OnboardingPulse from '../components/OnboardingPulse';
 
 const DashboardPage = () => {
   const [trips, setTrips] = useState<any[]>([]);
@@ -21,6 +23,8 @@ const DashboardPage = () => {
 
   return (
     <div className="space-y-8">
+      {/* Onboarding pulse: shows a small guide near the Create button on first visit */}
+      <OnboardingPulse />
       <section className="rounded-[32px] border border-slate-200/80 bg-white/95 p-8 shadow-soft">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
@@ -73,14 +77,16 @@ const DashboardPage = () => {
             <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">Synced</span>
           </div>
           <div className="space-y-3">
-            {trips.slice(0, 3).map((trip) => (
-              <div key={trip.id} className="flex items-center justify-between rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4">
-                <div>
-                  <p className="font-semibold text-slate-950">{trip.title}</p>
-                  <p className="text-sm text-slate-500">{trip.tripStops?.length ?? 0} stops • {trip.visibility}</p>
+            {trips.slice(0, 3).map((trip, idx) => (
+              <motion.div key={trip.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.03 }} whileHover={{ rotateY: 6, scale: 1.01 }} className="transform-style-preserve">
+                <div className="flex items-center justify-between rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4">
+                  <div>
+                    <p className="font-semibold text-slate-950">{trip.title}</p>
+                    <p className="text-sm text-slate-500">{trip.tripStops?.length ?? 0} stops • {trip.visibility}</p>
+                  </div>
+                  <Link to={`/builder?tripId=${trip.id}`} className="text-sm font-semibold text-brand-600">Open</Link>
                 </div>
-                <Link to={`/builder?tripId=${trip.id}`} className="text-sm font-semibold text-brand-600">Open</Link>
-              </div>
+              </motion.div>
             ))}
           </div>
         </Card>

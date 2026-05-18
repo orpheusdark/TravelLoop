@@ -5,6 +5,7 @@ import Input from '../components/ui/input';
 import { searchActivities } from '../services/activities';
 import { useDebounce } from '../hooks/useDebounce';
 import { motion } from 'framer-motion';
+import ActivityModal from '../components/ActivityModal';
 
 const categories = [
   { label: 'Adventure', value: 'adventure' },
@@ -20,6 +21,7 @@ const ActivityPage = () => {
   const [activities, setActivities] = useState<any[]>([]);
   const [search, setSearch] = useState('Rome');
   const debouncedSearch = useDebounce(search, 400);
+  const [selected, setSelected] = useState<any | null>(null);
 
   useEffect(() => {
     const [lat, lon] = [41.9028, 12.4964];
@@ -51,7 +53,7 @@ const ActivityPage = () => {
       <div className="grid gap-6 lg:grid-cols-2">
         {activities.map((activity, idx) => (
           <motion.div key={activity.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.03 }}>
-            <Card className="space-y-4">
+            <Card className="space-y-4" onClick={() => setSelected(activity)}>
             <div className="grid gap-3 sm:grid-cols-[1fr_180px]">
               <div>
                 <p className="text-sm uppercase tracking-[0.3em] text-brand-600">{activity.category}</p>
@@ -67,14 +69,15 @@ const ActivityPage = () => {
               <span>•</span>
               <span>{activity.rating} rating</span>
             </div>
-            <div className="flex items-center justify-between gap-3">
-              <Button>Add activity</Button>
+              <div className="flex items-center justify-between gap-3">
+              <Button onClick={(e) => { e.stopPropagation(); setSelected(activity); }}>Add activity</Button>
               <span className="rounded-2xl bg-slate-100 px-3 py-2 text-sm text-slate-600">Save later</span>
             </div>
             </Card>
           </motion.div>
         ))}
       </div>
+      <ActivityModal activity={selected} open={!!selected} onClose={() => setSelected(null)} />
       {!activities.length && <p className="text-center text-slate-500">Fetching activity options for {search}...</p>}
     </div>
   );

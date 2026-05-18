@@ -93,6 +93,32 @@ const ProfilePage = () => {
                 </button>
               ))}
             </div>
+              <div className="mt-3 grid gap-2">
+                <label className="text-xs text-slate-500">Upload background</label>
+                <input type="file" accept="image/*" onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  const reader = new FileReader();
+                  reader.onload = () => {
+                    const result = reader.result as string;
+                    setBg(result);
+                  };
+                  reader.readAsDataURL(file);
+                }} />
+                <label className="text-xs text-slate-500">Or use image URL</label>
+                <div className="flex items-center gap-2">
+                  <input placeholder="https://..." className="rounded-2xl border border-slate-200 px-3 py-2 text-sm w-full" onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      const val = (e.target as HTMLInputElement).value;
+                      if (val) setBg(val);
+                    }
+                  }} />
+                  <button className="rounded-2xl bg-brand-600 px-3 py-2 text-white" onClick={() => {
+                    const input = document.querySelector('input[placeholder="https://..."]') as HTMLInputElement | null;
+                    if (input?.value) setBg(input.value);
+                  }}>Set</button>
+                </div>
+              </div>
           </div>
           <div className="space-y-3 text-sm text-slate-600">
             <div className="rounded-3xl bg-slate-50 px-4 py-4">Theme: light glass</div>
