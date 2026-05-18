@@ -1,5 +1,6 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { motion } from 'framer-motion';
 
 export const SortableTripStop = ({ id, stop, selected, onSelect, onDelete }: { id: string; stop: any; selected: boolean; onSelect: () => void; onDelete?: () => void }) => {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
@@ -13,7 +14,15 @@ export const SortableTripStop = ({ id, stop, selected, onSelect, onDelete }: { i
   const departure = stop.departureDate ? new Date(stop.departureDate).toLocaleDateString() : 'TBD';
 
   return (
-    <div ref={setNodeRef} style={style} className={`rounded-3xl border ${selected ? 'border-brand-400 bg-brand-50/70' : 'border-slate-200 bg-white'} p-5 shadow-sm backdrop-blur-xl`}>
+    <motion.div
+      ref={setNodeRef}
+      style={style}
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover={{ scale: 1.01 }}
+      whileTap={{ scale: 0.995 }}
+      className={`rounded-3xl border ${selected ? 'border-brand-400 bg-brand-50/70' : 'border-slate-200 bg-white'} p-5 shadow-sm backdrop-blur-xl`}
+    >
       <div className="flex items-start justify-between gap-4">
         <div>
           <div className="text-sm uppercase tracking-[0.3em] text-slate-500">{cityLabel}</div>
@@ -29,12 +38,12 @@ export const SortableTripStop = ({ id, stop, selected, onSelect, onDelete }: { i
       {Array.isArray(stop.activities) && stop.activities.length ? (
         <div className="mt-4 flex flex-wrap gap-2">
           {stop.activities.map((item: any) => (
-            <span key={item.id} className="rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-slate-600 shadow-sm">
+            <motion.span key={item.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.05 }} className="rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-slate-600 shadow-sm">
               {item.activity?.title || item.title || 'Activity'}
-            </span>
+            </motion.span>
           ))}
         </div>
       ) : null}
-    </div>
+    </motion.div>
   );
 };
