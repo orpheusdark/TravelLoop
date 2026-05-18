@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import { motion } from 'framer-motion';
 
 const links = [
-  { to: '/', label: 'Dashboard', icon: FiHome },
+  { to: '/dashboard', label: 'Dashboard', icon: FiHome },
   { to: '/trips', label: 'Trips', icon: FiMap },
   { to: '/builder', label: 'Itinerary', icon: FiList },
   { to: '/discover', label: 'Discover', icon: FiCompass },
@@ -17,7 +17,7 @@ const Navigation = () => {
   return (
     <aside className="hidden w-72 flex-col gap-6 rounded-[32px] border border-slate-200/80 bg-white/95 p-6 shadow-soft lg:flex">
       <div className="mb-6">
-        <Link to="/" className="inline-flex items-center gap-3 text-xl font-semibold text-slate-950">
+        <Link to="/dashboard" className="inline-flex items-center gap-3 text-xl font-semibold text-slate-950">
           <span className="flex h-11 w-11 items-center justify-center rounded-3xl bg-brand-600 text-white shadow-lg">T</span>
           Traveloop
         </Link>

@@ -9,6 +9,7 @@ const DashboardPage = lazy(() => import('./pages/DashboardPage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const SignupPage = lazy(() => import('./pages/SignupPage'));
 const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage'));
+const LandingPage = lazy(() => import('./pages/LandingPage'));
 const TripsPage = lazy(() => import('./pages/TripsPage'));
 const CreateTripPage = lazy(() => import('./pages/CreateTripPage'));
 const BuilderPage = lazy(() => import('./pages/BuilderPage'));
@@ -31,12 +32,13 @@ const App = () => {
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <Suspense fallback={<LoadingFallback />}>
         <Routes>
+          <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<AuthLayout><LoginPage /></AuthLayout>} />
           <Route path="/signup" element={<AuthLayout><SignupPage /></AuthLayout>} />
           <Route path="/forgot-password" element={<AuthLayout><ForgotPasswordPage /></AuthLayout>} />
 
           <Route
-            path="/"
+            path="/dashboard"
             element={
               <ProtectedRoute>
                 <div className="grid min-h-screen gap-6 px-4 py-6 lg:grid-cols-[280px_1fr] lg:px-10">

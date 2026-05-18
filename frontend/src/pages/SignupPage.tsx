@@ -24,7 +24,7 @@ const SignupPage = () => {
   const onSubmit = async (values: FormValues) => {
     const response = await signup(values);
     setAuth(response.user, response.token);
-    navigate('/');
+    navigate('/dashboard');
   };
 
   return (
