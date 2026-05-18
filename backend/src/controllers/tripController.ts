@@ -38,7 +38,7 @@ export const getTrip = async (req: AuthRequest, res: Response) => {
   const tripId = Number(req.params.id);
   const trip = await prisma.trip.findFirst({
     where: { id: tripId, userId },
-    include: { tripStops: { orderBy: { orderIndex: 'asc' }, include: { activities: true } }, notes: true, packingItems: true }
+    include: { tripStops: { orderBy: { orderIndex: 'asc' }, include: { activities: { include: { activity: true } }, city: true } }, notes: true, packingItems: true }
   });
   if (!trip) {
     return res.status(404).json({ message: 'Trip not found' });
@@ -101,6 +101,7 @@ export const duplicateTrip = async (req: AuthRequest, res: Response) => {
       tripStops: {
         create: source.tripStops.map((stop) => ({
           cityId: stop.cityId,
+          cityName: stop.cityName,
           arrivalDate: stop.arrivalDate,
           departureDate: stop.departureDate,
           orderIndex: stop.orderIndex,

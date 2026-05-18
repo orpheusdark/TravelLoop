@@ -26,14 +26,20 @@ Traveloop is a polished full-stack travel planning platform built for the Odoo x
    ```bash
    npx prisma generate
    ```
-4. Run migrations / seed as needed:
+4. Push the local Prisma schema and seed demo data:
    ```bash
-   npx prisma migrate dev --name init
+   npx prisma db push
+   node prisma/seed.js
    ```
 5. Start backend:
    ```bash
    npm run dev
    ```
+
+Demo login:
+
+- Email: `demo@traveloop.app`
+- Password: `Password123!`
 
 ### Frontend
 

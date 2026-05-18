@@ -4,7 +4,7 @@ import { AuthRequest } from '../middleware/auth';
 
 export const addStop = async (req: AuthRequest, res: Response) => {
   const userId = req.userId!;
-  const { tripId, cityId, arrivalDate, departureDate, orderIndex, notes } = req.body;
+  const { tripId, cityId, cityName, arrivalDate, departureDate, orderIndex, notes } = req.body;
 
   const trip = await prisma.trip.findUnique({ where: { id: tripId } });
   if (!trip || trip.userId !== userId) {
@@ -12,7 +12,7 @@ export const addStop = async (req: AuthRequest, res: Response) => {
   }
 
   const stop = await prisma.tripStop.create({
-    data: { tripId, cityId, arrivalDate: new Date(arrivalDate), departureDate: new Date(departureDate), orderIndex, notes }
+    data: { tripId, cityId: cityId || null, cityName: cityName || null, arrivalDate: new Date(arrivalDate), departureDate: new Date(departureDate), orderIndex, notes }
   });
   res.status(201).json({ stop });
 };
@@ -20,7 +20,7 @@ export const addStop = async (req: AuthRequest, res: Response) => {
 export const updateStop = async (req: AuthRequest, res: Response) => {
   const userId = req.userId!;
   const stopId = Number(req.params.id);
-  const { arrivalDate, departureDate, orderIndex, notes } = req.body;
+  const { arrivalDate, departureDate, orderIndex, notes, cityName } = req.body;
 
   const stop = await prisma.tripStop.findUnique({ where: { id: stopId }, include: { trip: true } });
   if (!stop || stop.trip.userId !== userId) {
@@ -29,7 +29,7 @@ export const updateStop = async (req: AuthRequest, res: Response) => {
 
   const updated = await prisma.tripStop.update({
     where: { id: stopId },
-    data: { arrivalDate: new Date(arrivalDate), departureDate: new Date(departureDate), orderIndex, notes }
+    data: { arrivalDate: new Date(arrivalDate), departureDate: new Date(departureDate), orderIndex, notes, cityName: cityName || stop.cityName }
   });
   res.json({ stop: updated });
 };

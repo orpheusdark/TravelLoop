@@ -8,7 +8,8 @@ const router = Router();
 
 const stopSchema = z.object({
   tripId: z.number(),
-  cityId: z.number(),
+  cityId: z.number().optional(),
+  cityName: z.string().min(2).optional(),
   arrivalDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   departureDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   orderIndex: z.number().min(0),

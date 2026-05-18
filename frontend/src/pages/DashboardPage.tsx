@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom';
 import StatsCard from '../components/StatsCard';
 import { getTrips } from '../services/trips';
 import Card from '../components/ui/card';
+import { useAuthStore } from '../hooks/useAuthStore';
 
 const DashboardPage = () => {
   const [trips, setTrips] = useState<any[]>([]);
+  const user = useAuthStore((state) => state.user);
 
   useEffect(() => {
     getTrips().then((data) => setTrips(data.trips)).catch(console.error);
@@ -22,7 +24,7 @@ const DashboardPage = () => {
       <section className="rounded-[32px] border border-slate-200/80 bg-white/95 p-8 shadow-soft">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="text-sm uppercase tracking-[0.3em] text-brand-600">Hello traveller</p>
+            <p className="text-sm uppercase tracking-[0.3em] text-brand-600">Hello {user?.name?.split(' ')[0] || 'traveller'}</p>
             <h1 className="mt-3 text-4xl font-semibold text-slate-950">Plan your next adventure with confidence.</h1>
             <p className="mt-4 max-w-2xl text-slate-600">Track budgets, build day-wise itineraries, and discover curated destinations in one premium dashboard.</p>
           </div>
@@ -61,6 +63,41 @@ const DashboardPage = () => {
             <Link to="/activities" className="rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 transition hover:border-brand-200">Find local experiences</Link>
             <Link to="/analytics" className="rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 transition hover:border-brand-200">Review budget insights</Link>
           </div>
+        </Card>
+      </section>
+
+      <section className="grid gap-6 lg:grid-cols-2">
+        <Card className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-semibold text-slate-950">Recent trips</h2>
+            <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">Synced</span>
+          </div>
+          <div className="space-y-3">
+            {trips.slice(0, 3).map((trip) => (
+              <div key={trip.id} className="flex items-center justify-between rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4">
+                <div>
+                  <p className="font-semibold text-slate-950">{trip.title}</p>
+                  <p className="text-sm text-slate-500">{trip.tripStops?.length ?? 0} stops • {trip.visibility}</p>
+                </div>
+                <Link to={`/builder?tripId=${trip.id}`} className="text-sm font-semibold text-brand-600">Open</Link>
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        <Card className="space-y-4 bg-gradient-to-br from-slate-950 to-brand-700 text-white">
+          <h2 className="text-xl font-semibold">Travel intelligence</h2>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="rounded-3xl bg-white/10 p-4 backdrop-blur-xl">
+              <p className="text-xs uppercase tracking-[0.3em] text-slate-300">Best time</p>
+              <p className="mt-2 text-lg font-semibold">September</p>
+            </div>
+            <div className="rounded-3xl bg-white/10 p-4 backdrop-blur-xl">
+              <p className="text-xs uppercase tracking-[0.3em] text-slate-300">Weather</p>
+              <p className="mt-2 text-lg font-semibold">Mild & clear</p>
+            </div>
+          </div>
+          <p className="text-sm text-slate-200">Traveloop surfaces smart recommendations using city trends, budgets, and route quality.</p>
         </Card>
       </section>
     </div>

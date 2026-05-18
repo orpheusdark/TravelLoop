@@ -68,7 +68,7 @@ const TripsPage = () => {
                   <p className="mt-2 text-2xl font-semibold text-slate-950">${trip.budget}</p>
                 </div>
                 <div className="grid gap-2 sm:grid-cols-3">
-                  <Link to="/builder" className="rounded-2xl bg-white px-3 py-2 text-center text-sm text-brand-600 shadow-sm">View</Link>
+                  <Link to={`/builder?tripId=${trip.id}`} className="rounded-2xl bg-white px-3 py-2 text-center text-sm text-brand-600 shadow-sm">View</Link>
                   <button onClick={() => onDuplicate(trip.id)} className="rounded-2xl bg-brand-600 px-3 py-2 text-sm text-white">Duplicate</button>
                 </div>
               </div>
