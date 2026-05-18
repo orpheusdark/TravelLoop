@@ -78,3 +78,21 @@ export const searchActivities = async (req: Request, res: Response) => {
 
   res.json({ activities });
 };
+
+export const getActivity = async (req: Request, res: Response) => {
+  const id = req.params.id;
+
+  // numeric id -> persisted activity
+  if (/^\d+$/.test(String(id))) {
+    const activity = await prisma.activity.findUnique({ where: { id: Number(id) } });
+    if (!activity) return res.status(404).json({ message: 'Not found' });
+    return res.json({ activity });
+  }
+
+  // fallback ids (like fallback-1)
+  const found = (fallbackActivities as any[]).find((a) => String(a.id) === id);
+  if (found) return res.json({ activity: found });
+
+  // otherwise 404
+  res.status(404).json({ message: 'Not found' });
+};

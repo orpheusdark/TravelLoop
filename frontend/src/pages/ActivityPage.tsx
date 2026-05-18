@@ -6,6 +6,7 @@ import { searchActivities } from '../services/activities';
 import { useDebounce } from '../hooks/useDebounce';
 import { motion } from 'framer-motion';
 import ActivityModal from '../components/ActivityModal';
+import { Link } from 'react-router-dom';
 
 const categories = [
   { label: 'Adventure', value: 'adventure' },
@@ -71,7 +72,10 @@ const ActivityPage = () => {
             </div>
               <div className="flex items-center justify-between gap-3">
               <Button onClick={(e) => { e.stopPropagation(); setSelected(activity); }}>Add activity</Button>
-              <span className="rounded-2xl bg-slate-100 px-3 py-2 text-sm text-slate-600">Save later</span>
+              <div className="flex items-center gap-2">
+                <Link to={`/activities/${activity.id}`} onClick={(e) => e.stopPropagation()} className="text-sm text-brand-600">View details</Link>
+                <span className="rounded-2xl bg-slate-100 px-3 py-2 text-sm text-slate-600">Save later</span>
+              </div>
             </div>
             </Card>
           </motion.div>

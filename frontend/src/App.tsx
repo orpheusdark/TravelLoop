@@ -14,6 +14,7 @@ const CreateTripPage = lazy(() => import('./pages/CreateTripPage'));
 const BuilderPage = lazy(() => import('./pages/BuilderPage'));
 const DiscoverPage = lazy(() => import('./pages/DiscoverPage'));
 const ActivityPage = lazy(() => import('./pages/ActivityPage'));
+const ActivityDetailPage = lazy(() => import('./pages/ActivityDetailPage'));
 const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage'));
 const PackingPage = lazy(() => import('./pages/PackingPage'));
 const NotesPage = lazy(() => import('./pages/NotesPage'));
@@ -108,6 +109,19 @@ const App = () => {
                   <Navigation />
                   <main className="space-y-6">
                     <ActivityPage />
+                  </main>
+                </div>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/activities/:id"
+            element={
+              <ProtectedRoute>
+                <div className="grid min-h-screen gap-6 px-4 py-6 lg:grid-cols-[280px_1fr] lg:px-10">
+                  <Navigation />
+                  <main className="space-y-6">
+                    <ActivityDetailPage />
                   </main>
                 </div>
               </ProtectedRoute>

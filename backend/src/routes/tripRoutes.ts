@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { authenticate } from '../middleware/auth';
 import { createTrip, deleteTrip, duplicateTrip, getTrip, getTrips, updateTrip } from '../controllers/tripController';
+import { addActivityToTrip } from '../controllers/tripActivityController';
 import { z } from 'zod';
 import { validateBody } from '../middleware/validateRequest';
 
@@ -27,5 +28,6 @@ router.get('/:id', getTrip);
 router.put('/:id', validateBody(tripSchema), updateTrip);
 router.delete('/:id', deleteTrip);
 router.post('/:id/duplicate', duplicateTrip);
+router.post('/:id/activities', addActivityToTrip);
 
 export default router;
