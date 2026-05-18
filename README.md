@@ -36,6 +36,42 @@ Traveloop is a polished full-stack travel planning platform built for the Odoo x
    npm run dev
    ```
 
+### Database setup (local and production)
+
+Local (SQLite) - quick start
+
+- Ensure `backend/.env.example` contains `DATABASE_URL="file:./dev.db"` and copy it to `backend/.env`.
+- From the project root run:
+```bash
+cd backend
+npm install
+npx prisma generate
+npx prisma db push
+node prisma/seed.js   # seed demo data (if needed)
+npm run dev
+```
+- Verify the backend health endpoint:
+```bash
+curl http://localhost:5000/health
+npx prisma studio   # optional GUI to inspect dev.db
+```
+
+Production (Postgres) - notes
+
+- Set `DATABASE_URL` in `backend/.env` to your Postgres connection string, e.g. `postgresql://USER:PASSWORD@HOST:5432/DATABASE`.
+- Run migrations during deploy or in CI:
+```bash
+npx prisma migrate deploy
+# or for development
+npx prisma migrate dev --name init
+```
+- Ensure `prisma generate` is run in your build step and that env vars are available to the runtime.
+
+What the app does automatically
+
+- If `DATABASE_URL` points to the SQLite file and the file exists Prisma connects at startup.
+- `npx prisma db push` will create the SQLite file/schema if missing. The `prisma/seed.js` script populates demo data used by the frontend.
+
 Demo login:
 
 - Email: `demo@traveloop.app`
