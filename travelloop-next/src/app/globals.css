@@ -19,6 +19,7 @@
 html.light {
   --background: #f7fbff;
   --foreground: #0b1d2f;
+  color-scheme: light;
 }
 
 * {
@@ -52,6 +53,54 @@ h6 {
   backdrop-filter: blur(16px);
 }
 
+html.light .glass {
+  border-color: rgba(11, 29, 47, 0.12);
+  background: rgba(255, 255, 255, 0.82);
+}
+
+html.light .mesh-bg {
+  background:
+    radial-gradient(circle at 15% 30%, rgba(10, 109, 255, 0.08), transparent 38%),
+    radial-gradient(circle at 75% 10%, rgba(255, 122, 24, 0.08), transparent 36%),
+    radial-gradient(circle at 60% 70%, rgba(11, 191, 136, 0.08), transparent 34%);
+}
+
+html.light .text-slate-100,
+html.light .text-slate-200,
+html.light .text-slate-300 {
+  color: #254059 !important;
+}
+
+html.light .text-slate-400 {
+  color: #4b647d !important;
+}
+
+html.light .bg-white\/8,
+html.light .bg-white\/10,
+html.light .bg-white\/12 {
+  background-color: rgba(255, 255, 255, 0.82) !important;
+}
+
+html.light .bg-slate-900\/80,
+html.light .bg-slate-900\/60,
+html.light .bg-slate-900\/50 {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+}
+
+html.light .border-white\/20,
+html.light .border-white\/15,
+html.light .border-white\/25 {
+  border-color: rgba(11, 29, 47, 0.12) !important;
+}
+
+html.light .placeholder\:text-slate-300\/80::placeholder {
+  color: rgba(75, 100, 125, 0.75) !important;
+}
+
+html.light .bg-black\/40 {
+  background-color: rgba(11, 29, 47, 0.08) !important;
+}
+
 .mesh-bg {
   pointer-events: none;
   position: fixed;
@@ -73,6 +122,13 @@ h6 {
 
 .scroll-smooth {
   scroll-behavior: smooth;
+}
+
+html.light body {
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(10, 109, 255, 0.08), transparent 34%),
+    radial-gradient(circle at 80% 10%, rgba(255, 122, 24, 0.06), transparent 30%),
+    radial-gradient(circle at 55% 75%, rgba(11, 191, 136, 0.06), transparent 30%);
 }
 
 @media (max-width: 768px) {

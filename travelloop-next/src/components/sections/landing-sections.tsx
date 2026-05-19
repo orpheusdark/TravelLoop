@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import {
   Compass,
@@ -26,6 +28,8 @@ import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Destination, PlannerDay } from "@/lib/types";
+import { TravelGlobe } from "@/components/visuals/travel-globe";
+import { useAppStore } from "@/store/useAppStore";
 
 const destinations: Destination[] = [
   {
@@ -125,8 +129,17 @@ const faqs = [
 ];
 
 export function HeroSection() {
+  const router = useRouter();
+
+  const scrollToSection = (sectionId: string) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   return (
-    <section className="mx-auto grid w-[min(1200px,94%)] gap-8 pt-12 lg:grid-cols-[1.1fr_0.9fr]">
+    <section id="hero" className="mx-auto grid w-[min(1200px,94%)] gap-8 pt-12 lg:grid-cols-[1.1fr_0.9fr]">
       <Reveal>
         <Badge className="text-cyan-200">AI-Driven Travel Ecosystem</Badge>
         <h1 className="mt-4 text-5xl font-semibold leading-tight md:text-7xl">Discover Places Beyond the Tourist Map</h1>
@@ -138,8 +151,8 @@ export function HeroSection() {
           <Input placeholder="Interests" />
         </div>
         <div className="mt-4 flex flex-wrap items-center gap-3">
-          <Button variant="sunset" size="lg">Launch AI Planner</Button>
-          <Button variant="glass" size="lg">Watch Platform Tour</Button>
+          <Button variant="sunset" size="lg" onClick={() => router.push("/planner")}>Launch AI Planner</Button>
+          <Button variant="glass" size="lg" onClick={() => scrollToSection("world-exploration")}>Watch Platform Tour</Button>
           <div className="flex items-center gap-2 text-sm text-slate-300">
             <Users className="h-4 w-4" /> 120k travelers planned this month
           </div>
@@ -150,7 +163,7 @@ export function HeroSection() {
         <Card className="relative overflow-hidden">
           <CardContent className="p-0">
             <div className="relative h-[460px]">
-              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80')] bg-cover bg-center opacity-40" />
+              <Image src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80" alt="Global travel network" fill priority sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover opacity-40" />
               <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/20 to-slate-900/80" />
               <motion.div className="absolute left-5 top-6 rounded-xl border border-white/20 bg-white/15 p-3 text-sm backdrop-blur" animate={{ y: [0, -8, 0] }} transition={{ repeat: Infinity, duration: 4 }}>
                 Weather: Tokyo 17C
@@ -181,7 +194,7 @@ export function SmartSearchSection() {
   const chips = ["Weekend", "Family", "Remote Work", "Culture", "Food Crawl", "Nature", "Nightlife"];
 
   return (
-    <section className="mx-auto mt-20 w-[min(1200px,94%)]">
+    <section id="search" className="mx-auto mt-20 w-[min(1200px,94%)]">
       <Reveal>
         <div className="flex items-center justify-between">
           <div>
@@ -212,7 +225,7 @@ export function SmartSearchSection() {
           </CardContent>
         </Card>
         <Card className="relative overflow-hidden">
-          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1488085061387-422e29b40080?auto=format&fit=crop&w=1200&q=80')] bg-cover opacity-35" />
+          <Image src="https://images.unsplash.com/photo-1488085061387-422e29b40080?auto=format&fit=crop&w=1200&q=80" alt="Travel map discovery preview" fill sizes="(max-width: 1024px) 100vw, 40vw" className="object-cover opacity-35" />
           <CardContent className="relative h-full">
             <p className="text-sm uppercase tracking-[0.2em] text-cyan-300">Map Discovery</p>
             <p className="mt-2 text-sm text-slate-300">Interactive routes and area heat mapping for traffic, events, and crowd intelligence.</p>
@@ -230,18 +243,27 @@ export function SmartSearchSection() {
 
 export function FeaturedDestinationsSection() {
   return (
-    <section className="mx-auto mt-20 w-[min(1200px,94%)]">
+    <section id="destinations" className="mx-auto mt-20 w-[min(1200px,94%)]">
       <Reveal>
         <h2 className="text-3xl font-semibold md:text-4xl">Featured Destinations</h2>
       </Reveal>
       <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {destinations.map((item, idx) => (
+        {destinations.map((item) => (
           <motion.div key={item.id} whileHover={{ y: -6 }} transition={{ type: "spring", stiffness: 220, damping: 20 }}>
             <Card className="overflow-hidden">
               <div className="relative h-56 overflow-hidden">
-                <motion.div whileHover={{ scale: 1.08 }} transition={{ duration: 0.5 }} className="h-full w-full bg-cover bg-center" style={{ backgroundImage: `url(${item.image})` }} />
+                <motion.div whileHover={{ scale: 1.08 }} transition={{ duration: 0.5 }} className="relative h-full w-full">
+                  <Image src={item.image} alt={item.name} fill sizes="(max-width: 1280px) 100vw, 33vw" className="object-cover" />
+                </motion.div>
                 <div className="absolute left-3 top-3"><Badge>{item.category}</Badge></div>
-                <button className="absolute right-3 top-3 rounded-full bg-black/40 p-2"><Heart className="h-4 w-4" /></button>
+                <button
+                  type="button"
+                  className="absolute right-3 top-3 rounded-full bg-black/40 p-2"
+                  aria-label={`Save ${item.name}`}
+                  onClick={() => useAppStore.getState().saveDestination(item.name)}
+                >
+                  <Heart className="h-4 w-4" />
+                </button>
               </div>
               <CardContent>
                 <CardTitle>{item.name}</CardTitle>
@@ -263,14 +285,12 @@ export function FeaturedDestinationsSection() {
 
 export function WorldExplorationSection() {
   return (
-    <section className="mx-auto mt-20 w-[min(1200px,94%)]">
+    <section id="world-exploration" className="mx-auto mt-20 w-[min(1200px,94%)]">
       <Card className="overflow-hidden">
         <CardContent className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-          <div className="relative h-[320px] rounded-2xl border border-white/20 bg-[url('https://images.unsplash.com/photo-1526772662000-3f88f10405ff?auto=format&fit=crop&w=1400&q=80')] bg-cover bg-center">
-            <div className="absolute inset-0 bg-gradient-to-tr from-slate-950/70 to-transparent" />
-            <motion.div className="absolute left-12 top-14 h-3 w-3 rounded-full bg-cyan-300" animate={{ scale: [1, 1.8, 1], opacity: [1, 0.4, 1] }} transition={{ repeat: Infinity, duration: 2.5 }} />
-            <motion.div className="absolute right-16 top-24 h-3 w-3 rounded-full bg-orange-300" animate={{ scale: [1, 1.8, 1], opacity: [1, 0.4, 1] }} transition={{ repeat: Infinity, duration: 2.8 }} />
-            <motion.div className="absolute bottom-16 left-1/2 h-3 w-3 rounded-full bg-emerald-300" animate={{ scale: [1, 1.8, 1], opacity: [1, 0.4, 1] }} transition={{ repeat: Infinity, duration: 2.2 }} />
+          <div className="relative h-[320px] overflow-hidden rounded-2xl border border-white/20 bg-slate-950/60">
+            <TravelGlobe />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-slate-950/50 via-transparent to-transparent" />
           </div>
           <div>
             <h2 className="text-3xl font-semibold">Interactive World Exploration</h2>
@@ -289,7 +309,7 @@ export function WorldExplorationSection() {
 
 export function AiPlannerSection() {
   return (
-    <section className="mx-auto mt-20 w-[min(1200px,94%)]">
+    <section id="ai-planner" className="mx-auto mt-20 w-[min(1200px,94%)]">
       <Reveal>
         <h2 className="text-3xl font-semibold md:text-4xl">AI Travel Planner</h2>
       </Reveal>
@@ -321,7 +341,7 @@ export function AiPlannerSection() {
               <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ repeat: Infinity, duration: 2.8, delay: 0.2 }} className="rounded-lg bg-white/10 p-3 text-sm">Balancing budget by district demand...</motion.div>
               <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ repeat: Infinity, duration: 3, delay: 0.3 }} className="rounded-lg bg-white/10 p-3 text-sm">Injecting local event opportunities...</motion.div>
             </div>
-            <Button variant="sunset" className="mt-5 w-full">Generate My Itinerary</Button>
+            <Button variant="sunset" className="mt-5 w-full" onClick={() => window.location.assign("/planner")}>Generate My Itinerary</Button>
           </CardContent>
         </Card>
       </div>
@@ -330,13 +350,21 @@ export function AiPlannerSection() {
 }
 
 export function CommunitySection() {
+  const communityImages = [
+    "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=900&q=80",
+    "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80",
+    "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?auto=format&fit=crop&w=900&q=80"
+  ];
+
   return (
-    <section className="mx-auto mt-20 w-[min(1200px,94%)]">
+    <section id="community" className="mx-auto mt-20 w-[min(1200px,94%)]">
       <h2 className="text-3xl font-semibold md:text-4xl">Community and Reviews</h2>
       <div className="mt-6 grid gap-4 md:grid-cols-3">
         {["Hidden ramen tour in Kyoto", "Sunrise hike in Madeira", "Art lane stories from Lisbon"].map((story, idx) => (
           <Card key={story} className="overflow-hidden">
-            <div className="h-44 bg-cover bg-center" style={{ backgroundImage: `url(https://images.unsplash.com/photo-15${idx + 10}3296635249-4ec9f88b9b?auto=format&fit=crop&w=900&q=70)` }} />
+            <div className="relative h-44">
+              <Image src={communityImages[idx]} alt={story} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" />
+            </div>
             <CardContent>
               <p className="text-xs uppercase tracking-[0.2em] text-slate-300">Verified traveler</p>
               <p className="mt-2 font-medium">{story}</p>
@@ -351,7 +379,7 @@ export function CommunitySection() {
 
 export function MarketplaceSection() {
   return (
-    <section className="mx-auto mt-20 w-[min(1200px,94%)]">
+    <section id="marketplace" className="mx-auto mt-20 w-[min(1200px,94%)]">
       <h2 className="text-3xl font-semibold md:text-4xl">Experience Marketplace</h2>
       <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {["Guided Tours", "Local Events", "Cultural Experiences", "Adventure + Food"].map((type) => (
@@ -360,7 +388,7 @@ export function MarketplaceSection() {
               <p className="text-sm text-cyan-300">{type}</p>
               <p className="mt-2 text-lg font-medium">Starting at $79</p>
               <p className="mt-2 text-sm text-slate-300">Host verified · 24 slots left · 4.9 reviews</p>
-              <Button variant="glass" className="mt-4 w-full">Quick book</Button>
+              <Button variant="glass" className="mt-4 w-full" onClick={() => window.location.assign("/booking")}>Quick book</Button>
             </CardContent>
           </Card>
         ))}
@@ -371,7 +399,7 @@ export function MarketplaceSection() {
 
 export function InsightsSection() {
   return (
-    <section className="mx-auto mt-20 w-[min(1200px,94%)]">
+    <section id="insights" className="mx-auto mt-20 w-[min(1200px,94%)]">
       <h2 className="text-3xl font-semibold md:text-4xl">Real-Time Travel Insights</h2>
       <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {insights.map((insight) => {
@@ -394,7 +422,7 @@ export function InsightsSection() {
 
 export function MobileShowcaseSection() {
   return (
-    <section className="mx-auto mt-20 w-[min(1200px,94%)]">
+    <section id="mobile" className="mx-auto mt-20 w-[min(1200px,94%)]">
       <Card>
         <CardContent className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
           <div className="relative mx-auto h-[430px] w-[220px] rounded-[2.2rem] border border-white/20 bg-slate-900/60 p-2">
@@ -416,8 +444,8 @@ export function MobileShowcaseSection() {
               ))}
             </div>
             <div className="mt-6 flex gap-3">
-              <Button variant="sunset">App Store</Button>
-              <Button variant="glass">Google Play</Button>
+              <Button variant="sunset" onClick={() => window.location.assign("/signup")}>App Store</Button>
+              <Button variant="glass" onClick={() => window.location.assign("/signup")}>Google Play</Button>
             </div>
           </div>
         </CardContent>
@@ -434,7 +462,7 @@ export function PricingSection() {
   ];
 
   return (
-    <section className="mx-auto mt-20 w-[min(1200px,94%)]">
+    <section id="pricing" className="mx-auto mt-20 w-[min(1200px,94%)]">
       <h2 className="text-3xl font-semibold md:text-4xl">Pricing</h2>
       <div className="mt-6 grid gap-4 md:grid-cols-3">
         {plans.map((plan, idx) => (
@@ -443,7 +471,7 @@ export function PricingSection() {
               <p className="text-sm uppercase tracking-[0.2em] text-cyan-300">{plan.name}</p>
               <p className="mt-2 text-4xl font-semibold">{plan.price}<span className="text-base text-slate-300">/mo</span></p>
               <p className="mt-2 text-sm text-slate-300">{plan.desc}</p>
-              <Button variant={idx === 1 ? "sunset" : "glass"} className="mt-5 w-full">Choose Plan</Button>
+              <Button variant={idx === 1 ? "sunset" : "glass"} className="mt-5 w-full" onClick={() => window.location.assign("/signup")}>Choose Plan</Button>
             </CardContent>
           </Card>
         ))}
@@ -454,7 +482,7 @@ export function PricingSection() {
 
 export function FaqSection() {
   return (
-    <section className="mx-auto mt-20 w-[min(900px,94%)] pb-20">
+    <section id="faq" className="mx-auto mt-20 w-[min(900px,94%)] pb-20">
       <h2 className="text-3xl font-semibold md:text-4xl">FAQ</h2>
       <div className="mt-5">
         <Accordion items={faqs} />

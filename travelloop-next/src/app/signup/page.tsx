@@ -2,16 +2,41 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { LoaderCircle } from "lucide-react";
+import { authApi } from "@/lib/api";
+import { useAppStore } from "@/store/useAppStore";
 
 const steps = ["Basic info", "Travel interests", "Budget", "Dream destinations", "Travel style", "AI personalization"];
 
 export default function SignupPage() {
+  const router = useRouter();
+  const setAuth = useAppStore((state) => state.setAuth);
   const [step, setStep] = useState(0);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const progress = ((step + 1) / steps.length) * 100;
+
+  async function handleFinish() {
+    setError(null);
+    setLoading(true);
+    try {
+      const result = await authApi.register({ name, email, password });
+      setAuth(result.user, result.token);
+      router.push("/dashboard");
+    } catch (signupError) {
+      setError(signupError instanceof Error ? signupError.message : "Unable to complete signup");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <div className="mx-auto min-h-screen w-[min(960px,94%)] py-10">
@@ -24,9 +49,9 @@ export default function SignupPage() {
         <div className="mt-6 space-y-4">
           {step === 0 && (
             <div className="grid gap-3 sm:grid-cols-2">
-              <Input placeholder="Full name" />
-              <Input placeholder="Email" type="email" />
-              <Input placeholder="Password" type="password" className="sm:col-span-2" />
+              <Input placeholder="Full name" value={name} onChange={(event) => setName(event.target.value)} />
+              <Input placeholder="Email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} />
+              <Input placeholder="Password" type="password" className="sm:col-span-2" value={password} onChange={(event) => setPassword(event.target.value)} />
             </div>
           )}
           {step === 1 && <TagStep tags={["Nature", "Food", "History", "Nightlife", "Photography", "Roadtrip"]} />}
@@ -41,9 +66,10 @@ export default function SignupPage() {
           {step < steps.length - 1 ? (
             <Button onClick={() => setStep((s) => Math.min(steps.length - 1, s + 1))}>Continue</Button>
           ) : (
-            <Link href="/dashboard"><Button variant="sunset">Finish Setup</Button></Link>
+            <Button variant="sunset" onClick={handleFinish} disabled={loading}>{loading ? <LoaderCircle className="mr-2 h-4 w-4 animate-spin" /> : null}Finish Setup</Button>
           )}
         </div>
+        {error ? <p className="mt-3 text-sm text-red-300">{error}</p> : null}
         <p className="mt-4 text-sm text-slate-300">Already registered? <Link href="/login" className="text-cyan-300">Login</Link></p>
       </Card>
     </div>

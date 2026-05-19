@@ -7,19 +7,22 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useAppStore } from "@/store/useAppStore";
 
 const navLinks = [
-  "Destinations",
-  "Explore",
-  "Experiences",
-  "Travel Planner",
-  "Community",
-  "Pricing"
+  { label: "Destinations", href: "#destinations" },
+  { label: "Explore", href: "#world-exploration" },
+  { label: "Experiences", href: "#marketplace" },
+  { label: "Travel Planner", href: "#ai-planner" },
+  { label: "Community", href: "#community" },
+  { label: "Pricing", href: "#pricing" }
 ];
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const user = useAppStore((state) => state.user);
+  const logout = useAppStore((state) => state.logout);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -37,16 +40,25 @@ export function Navbar() {
 
         <nav className="hidden items-center gap-5 text-sm md:flex">
           {navLinks.map((item) => (
-            <a key={item} href="#" className="relative text-slate-200 transition hover:text-white after:absolute after:-bottom-1 after:left-0 after:h-px after:w-0 after:bg-cyan-300 after:transition-all hover:after:w-full">
-              {item}
+            <a key={item.label} href={item.href} className="relative text-slate-200 transition hover:text-white after:absolute after:-bottom-1 after:left-0 after:h-px after:w-0 after:bg-cyan-300 after:transition-all hover:after:w-full">
+              {item.label}
             </a>
           ))}
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
           <ThemeToggle />
-          <Link href="/login"><Button variant="ghost" size="sm">Login</Button></Link>
-          <Link href="/signup"><Button variant="sunset" size="sm">Sign Up</Button></Link>
+          {user ? (
+            <>
+              <Link href="/dashboard"><Button variant="ghost" size="sm">{user.name.split(" ")[0]}</Button></Link>
+              <Button variant="sunset" size="sm" onClick={logout}>Logout</Button>
+            </>
+          ) : (
+            <>
+              <Link href="/login"><Button variant="ghost" size="sm">Login</Button></Link>
+              <Link href="/signup"><Button variant="sunset" size="sm">Sign Up</Button></Link>
+            </>
+          )}
         </div>
 
         <button className="md:hidden" onClick={() => setOpen((value) => !value)} aria-label="Open menu">
@@ -59,11 +71,17 @@ export function Navbar() {
           <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="mt-3 overflow-hidden rounded-xl border border-white/15 bg-slate-900/80 p-4 backdrop-blur md:hidden">
             <div className="grid gap-3 text-sm">
               {navLinks.map((item) => (
-                <a key={item} href="#" className="text-slate-100">{item}</a>
+                <a key={item.label} href={item.href} className="text-slate-100">{item.label}</a>
               ))}
               <div className="flex items-center gap-2 pt-2">
-                <Link href="/login"><Button variant="ghost" size="sm">Login</Button></Link>
-                <Link href="/signup"><Button variant="sunset" size="sm">Sign Up</Button></Link>
+                {user ? (
+                  <Button variant="sunset" size="sm" onClick={logout}>Logout</Button>
+                ) : (
+                  <>
+                    <Link href="/login"><Button variant="ghost" size="sm">Login</Button></Link>
+                    <Link href="/signup"><Button variant="sunset" size="sm">Sign Up</Button></Link>
+                  </>
+                )}
               </div>
             </div>
           </motion.div>

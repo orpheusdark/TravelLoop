@@ -8,8 +8,8 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: "bg-[var(--ocean-blue)] text-white hover:-translate-y-0.5 hover:shadow-lg hover:shadow-cyan-500/30",
-        ghost: "bg-transparent text-foreground hover:bg-white/10",
-        glass: "glass text-foreground hover:bg-white/20",
+        ghost: "bg-transparent text-foreground hover:bg-white/10 html.light:hover:bg-slate-100",
+        glass: "glass text-foreground hover:bg-white/20 html.light:bg-white/90 html.light:hover:bg-slate-100",
         sunset: "bg-gradient-to-r from-[var(--sunset-orange)] to-amber-400 text-slate-950 hover:brightness-105"
       },
       size: {
